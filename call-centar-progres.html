@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Call Centar — Nedeljni cilj</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #080d18;
+    --track: #10192c;
+    --track-line: #1c2947;
+    --fill-a: #00e0a8;
+    --fill-b: #00b8d9;
+    --glow: #7dffe0;
+    --amber: #ff9f43;
+    --text: #eef2f8;
+    --muted: #64748b;
+    --muted-2: #3d4a63;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html, body{
+    height:100%;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Mono', monospace;
+    overflow:hidden;
+  }
+
+  .display{ font-family:'Space Grotesk', sans-serif; }
+
+  .stage{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- HEADER ---------- */
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding: clamp(16px, 3vw, 36px) clamp(20px, 4vw, 48px) 0;
+    z-index:5;
+  }
+
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:clamp(11px, 1.3vw, 14px);
+    letter-spacing:.18em;
+    color:var(--muted);
+    text-transform:uppercase;
+    font-weight:500;
+  }
+
+  .live-dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--fill-a);
+    box-shadow:0 0 0 0 rgba(0,224,168,.6);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(0,224,168,.55); }
+    70%{ box-shadow:0 0 0 10px rgba(0,224,168,0); }
+    100%{ box-shadow:0 0 0 0 rgba(0,224,168,0); }
+  }
+
+  .clock{
+    font-size:clamp(11px, 1.3vw, 14px);
+    letter-spacing:.1em;
+    color:var(--muted);
+    text-align:right;
+  }
+  .clock span{ color:var(--text); }
+
+  /* ---------- HERO / CENTER ---------- */
+  .hero{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:clamp(6px, 1.4vw, 14px);
+    z-index:5;
+    text-align:center;
+    padding: 0 20px;
+  }
+
+  .pct{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(90px, 18vw, 220px);
+    line-height:.95;
+    letter-spacing:-.02em;
+    background:linear-gradient(90deg, var(--fill-a), var(--fill-b));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 0 40px rgba(0,224,168,.18));
+  }
+
+  .count-row{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    font-family:'Space Grotesk', sans-serif;
+  }
+
+  .count-now{
+    font-size:clamp(28px, 4vw, 46px);
+    font-weight:600;
+    color:var(--text);
+  }
+  .count-of{
+    font-size:clamp(16px, 2vw, 22px);
+    color:var(--muted);
+    font-weight:500;
+  }
+  .count-goal{
+    font-size:clamp(28px, 4vw, 46px);
+    font-weight:600;
+    color:var(--text);
+  }
+  .count-unit{
+    font-size:clamp(13px, 1.5vw, 17px);
+    color:var(--muted);
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    margin-left:4px;
+  }
+
+  .subtitle{
+    font-size:clamp(11px, 1.3vw, 14px);
+    letter-spacing:.16em;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+
+  /* ---------- STATS ROW ---------- */
+  .stats{
+    display:flex;
+    justify-content:center;
+    gap:clamp(24px, 6vw, 90px);
+    margin-top:clamp(18px, 3vw, 30px);
+    flex-wrap:wrap;
+  }
+  .stat{ text-align:center; }
+  .stat-num{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(22px, 2.6vw, 32px);
+    font-weight:600;
+    color:var(--text);
+  }
+  .stat-num.amber{ color:var(--amber); }
+  .stat-label{
+    font-size:clamp(10px, 1vw, 12px);
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-top:4px;
+  }
+
+  /* ---------- BOTTOM: THE BAR ITSELF ---------- */
+  .barzone{
+    position:relative;
+    height:clamp(120px, 20vh, 200px);
+    z-index:5;
+  }
+
+  .track{
+    position:absolute;
+    inset:0;
+    background:var(--track);
+    border-top:1px solid var(--track-line);
+  }
+
+  .fill{
+    position:absolute;
+    top:0; left:0; bottom:0;
+    width:0%;
+    background:linear-gradient(90deg, #00d19b, var(--fill-a) 55%, var(--fill-b));
+    transition:width 1.8s cubic-bezier(.65,0,.35,1);
+  }
+
+  .fill::after{
+    /* moving edge glow */
+    content:"";
+    position:absolute;
+    top:0; right:-2px; bottom:0;
+    width:4px;
+    background:var(--glow);
+    box-shadow: 0 0 24px 6px rgba(125,255,224,.8);
+  }
+
+  .ticks{
+    position:absolute;
+    inset:0;
+    display:flex;
+  }
+  .tick{
+    position:relative;
+    flex:1;
+    border-right:1px solid rgba(255,255,255,.06);
+  }
+  .tick:last-child{ border-right:none; }
+  .tick-label{
+    position:absolute;
+    bottom:10px;
+    right:8px;
+    font-size:clamp(9px, 1vw, 12px);
+    color:var(--muted-2);
+    letter-spacing:.05em;
+  }
+  .tick-label.passed{ color:rgba(255,255,255,.55); }
+
+  .marker{
+    position:absolute;
+    top:-9px;
+    transform:translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    transition:left 1.8s cubic-bezier(.65,0,.35,1);
+  }
+  .marker-flag{
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--bg);
+    background:var(--glow);
+    padding:3px 8px;
+    border-radius:3px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .marker-line{
+    width:2px;
+    height:18px;
+    background:var(--glow);
+  }
+
+  @media (max-width:640px){
+    .stats{ gap:20px; }
+    .barzone{ height:150px; }
+    .marker-flag{ font-size:9px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="header">
+    <div class="eyebrow"><span class="live-dot"></span> Call centar &middot; nedeljni cilj poziva</div>
+    <div class="clock" id="clock">-- : -- : --</div>
+  </div>
+
+  <div class="hero">
+    <div class="pct display" id="pctBig">8%</div>
+    <div class="count-row">
+      <span class="count-now" id="nowNum">80</span>
+      <span class="count-of">od</span>
+      <span class="count-goal" id="goalNum">1000</span>
+      <span class="count-unit">poziva</span>
+    </div>
+    <div class="subtitle" id="remainingLine">920 poziva do cilja</div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="daysLeft">–</div>
+        <div class="stat-label">Preostalo dana</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num amber" id="perDay">–</div>
+        <div class="stat-label">Poziva dnevno do cilja</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="goalNum2">1000</div>
+        <div class="stat-label">Nedeljni cilj</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="barzone">
+    <div class="track"></div>
+    <div class="fill" id="fillBar"></div>
+    <div class="ticks" id="ticks"></div>
+    <div class="marker" id="marker" style="left:8%">
+      <div class="marker-flag">Ovde smo</div>
+      <div class="marker-line"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ====== PODESI OVE DVE VREDNOSTI SVAKI DAN ======
+  const CURRENT_CALLS = 80;
+  const GOAL_CALLS = 1000;
+  // =================================================
+
+  const pct = Math.min(100, (CURRENT_CALLS / GOAL_CALLS) * 100);
+  const pctRounded = Math.round(pct * 10) / 10;
+
+  document.getElementById('pctBig').textContent = (pctRounded % 1 === 0 ? pctRounded : pctRounded) + '%';
+  document.getElementById('nowNum').textContent = CURRENT_CALLS.toLocaleString('sr-RS');
+  document.getElementById('goalNum').textContent = GOAL_CALLS.toLocaleString('sr-RS');
+  document.getElementById('goalNum2').textContent = GOAL_CALLS.toLocaleString('sr-RS');
+
+  const remaining = Math.max(0, GOAL_CALLS - CURRENT_CALLS);
+  document.getElementById('remainingLine').textContent =
+    remaining > 0 ? remaining.toLocaleString('sr-RS') + ' poziva do cilja' : 'Cilj ostvaren! 🎉';
+
+  // Dani preostali do kraja nedelje (nedelja = pon-ned, kraj u nedelju 23:59)
+  const now = new Date();
+  const dayOfWeek = now.getDay(); // 0=nedelja, 1=pon ... 6=subota
+  const daysUntilSunday = dayOfWeek === 0 ? 0 : (7 - dayOfWeek);
+  const daysLeft = Math.max(1, daysUntilSunday + 1); // uključujući danas
+  document.getElementById('daysLeft').textContent = daysLeft;
+
+  const perDay = remaining > 0 ? Math.ceil(remaining / daysLeft) : 0;
+  document.getElementById('perDay').textContent = perDay.toLocaleString('sr-RS');
+
+  // Bar fill + marker (animirano na učitavanju)
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.getElementById('fillBar').style.width = pct + '%';
+      document.getElementById('marker').style.left = pct + '%';
+    }, 150);
+  });
+
+  // Tick oznake na svakih 100 poziva
+  const ticksEl = document.getElementById('ticks');
+  const step = 100;
+  const totalTicks = Math.round(GOAL_CALLS / step);
+  for (let i = 1; i <= totalTicks; i++){
+    const tickVal = i * step;
+    const div = document.createElement('div');
+    div.className = 'tick';
+    const label = document.createElement('div');
+    label.className = 'tick-label' + (tickVal <= CURRENT_CALLS ? ' passed' : '');
+    label.textContent = tickVal.toLocaleString('sr-RS');
+    div.appendChild(label);
+    ticksEl.appendChild(div);
+  }
+
+  // Sat uživo
+  function updateClock(){
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    const ss = String(d.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>
